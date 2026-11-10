@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/
+
+# Model artefacts
+*.h5
+
+# --- Firmware: regenerated from firmware/remorarl43.ioc via STM32CubeMX ---
+firmware/Drivers/
+firmware/Middlewares/
+firmware/Libs/
+firmware/cmake-build-*/
+firmware/build/
+firmware/Debug/
+firmware/Release/
+
+# Firmware build output
+*.o
+*.d
+*.elf
+*.bin
+*.hex
+*.map
+*.su
+*.list
+
+# Editor / OS
+*~
+*.bak
+*.h~
+*.c~
+Thumbs.db
+Desktop.ini
+.DS_Store
+figures/

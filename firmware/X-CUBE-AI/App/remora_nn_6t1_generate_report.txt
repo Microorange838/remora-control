@@ -1,0 +1,154 @@
+STEdgeAI Core v9.0.0-19802
+Created date          : 2026-11-10 13:20:14
+Parameters            : generate --target stm32h7 --name remora_nn_6t1 -m D:/Product/RemoraRL/remora-control/models/attachment.tflite --compression none --verbosity 1 --allocate-inputs --allocate-outputs --workspace C:/Users/Gmail/AppData/Local/Temp/mxAI_workspace15652798302001969656771070710680 --output C:/Users/Gmail/.stm32cubemx/remora_nn_6t1_output
+
+Exec/report summary (generate)
+----------------------------------------------------------------------------------------------------------
+model file         :   D:\Product\RemoraRL\remora-control\models\attachment.tflite                        
+type               :   tflite                                                                             
+c_name             :   remora_nn_6t1                                                                      
+compression        :   none                                                                               
+options            :   allocate-inputs, allocate-outputs                                                  
+optimization       :   balanced                                                                           
+target/series      :   stm32h7                                                                            
+workspace dir      :   C:\Users\Gmail\AppData\Local\Temp\mxAI_workspace15652798302001969656771070710680   
+output dir         :   C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output                                   
+model_fmt          :   float                                                                              
+model_name         :   attachment                                                                         
+model_hash         :   0x44cd2320392c14a4b7b49df2f08fbe3f                                                 
+params #           :   34,817 items (136.00 KiB)                                                          
+----------------------------------------------------------------------------------------------------------
+input 1/1          :   'serving_default_dense_input0', f32(1x6), 24 Bytes, activations                    
+output 1/1         :   'gemm_2', f32(1x1), 4 Bytes, activations                                           
+macc               :   35,201                                                                             
+weights (ro)       :   139,268 B (136.00 KiB) (1 segment)                                                 
+activations (rw)   :   1,536 B (1.50 KiB) (1 segment) *                                                   
+ram (total)        :   1,536 B (1.50 KiB) = 1,536 + 0 + 0                                                 
+----------------------------------------------------------------------------------------------------------
+(*) 'input'/'output' buffers can be used from the activations buffer
+
+Model name - attachment
+------ ----------------------------------------------------------- --------------- ---------------- -------- ------------------------------------------- --- ----------------- ------------------ ---------------------------- 
+m_id   layer (type,original)                                       oshape          param/size           macc                                connected to   | c_size            c_macc             c_type                       
+------ ----------------------------------------------------------- --------------- ---------------- -------- ------------------------------------------- --- ----------------- ------------------ ---------------------------- 
+0      serving_default_dense_input0 (Input, )                      [b:1,c:6]                                                                               | +7,168(+100.0%)   +2,048(+100.0%)    Dense_/Nonlinearity_[0, 1]   
+       sequential_dense_MatMul (Placeholder, )                     [h:256,c:6]     1,536/6,144                                                             | -6,144(-100.0%)                      
+       sequential_dense_BiasAdd_ReadVariableOp (Placeholder, )     [c:256]         256/1,024                                                               | -1,024(-100.0%)                      
+       gemm_0 (Gemm, FULLY_CONNECTED)                              [b:1,c:256]                         1,792                serving_default_dense_input0   |                   -1,792(-100.0%)    
+                                                                                                                                 sequential_dense_MatMul   | 
+                                                                                                                 sequential_dense_BiasAdd_ReadVariableOp   | 
+       nl_0_nl (Nonlinearity, FULLY_CONNECTED)                     [b:1,c:256]                           256                                      gemm_0   |                   -256(-100.0%)      
+------ ----------------------------------------------------------- --------------- ---------------- -------- ------------------------------------------- --- ----------------- ------------------ ---------------------------- 
+1      sequential_dense_1_MatMul (Placeholder, )                   [h:128,c:256]   32,768/131,072                                                          | +512(+0.4%)       +33,024(+100.0%)   Dense_/Nonlinearity_[2, 3]   
+       sequential_dense_1_BiasAdd_ReadVariableOp (Placeholder, )   [c:128]         128/512                                                                 | -512(-100.0%)                        
+       gemm_1 (Gemm, FULLY_CONNECTED)                              [b:1,c:128]                        32,896                                     nl_0_nl   |                   -32,896(-100.0%)   
+                                                                                                                               sequential_dense_1_MatMul   | 
+                                                                                                               sequential_dense_1_BiasAdd_ReadVariableOp   | 
+       nl_1_nl (Nonlinearity, FULLY_CONNECTED)                     [b:1,c:128]                           128                                      gemm_1   |                   -128(-100.0%)      
+------ ----------------------------------------------------------- --------------- ---------------- -------- ------------------------------------------- --- ----------------- ------------------ ---------------------------- 
+2      sequential_dense_2_MatMul (Placeholder, )                   [b:1,c:128]     128/512                                                                 | +4(+0.8%)         +129(+100.0%)      Dense_[o][4]                 
+       sequential_dense_2_BiasAdd_ReadVariableOp (Placeholder, )   [c:1]           1/4                                                                     | -4(-100.0%)                          
+       gemm_2 (Gemm, FULLY_CONNECTED)                              [b:1,c:1]                             129                                     nl_1_nl   |                   -129(-100.0%)      
+                                                                                                                               sequential_dense_2_MatMul   | 
+                                                                                                               sequential_dense_2_BiasAdd_ReadVariableOp   | 
+------ ----------------------------------------------------------- --------------- ---------------- -------- ------------------------------------------- --- ----------------- ------------------ ---------------------------- 
+model/c-model: macc=35,201/35,201  weights=139,268/139,268  activations=--/1,536 io=--/0
+
+
+
+Generated C-graph summary
+------------------------------------------------------------------------------------------------------------------------
+model name            : attachment
+c-name                : remora_nn_6t1
+c-node #              : 5
+c-array #             : 12
+activations size      : 1536 (1 segment)
+weights size          : 139268 (1 segment)
+macc                  : 35201
+inputs                : ['serving_default_dense_input0_output']
+outputs               : ['gemm_2_output']
+
+C-Arrays (12)
+------ ------------------------------------- -------------- ------------------------- ------------- --------- 
+c_id   name (*_array)                        item/size      domain/mem-pool           c-type        comment   
+------ ------------------------------------- -------------- ------------------------- ------------- --------- 
+0      gemm_0_bias                           256/1024       weights/weights           const float             
+1      gemm_0_output                         256/1024       activations/**default**   float                   
+2      gemm_0_weights                        1536/6144      weights/weights           const float             
+3      gemm_1_bias                           128/512        weights/weights           const float             
+4      gemm_1_output                         128/512        activations/**default**   float                   
+5      gemm_1_weights                        32768/131072   weights/weights           const float             
+6      gemm_2_bias                           1/4            weights/weights           const float             
+7      gemm_2_output                         1/4            activations/**default**   float         /output   
+8      gemm_2_weights                        128/512        weights/weights           const float             
+9      nl_0_nl_output                        256/1024       activations/**default**   float                   
+10     nl_1_nl_output                        128/512        activations/**default**   float                   
+11     serving_default_dense_input0_output   6/24           activations/**default**   float         /input    
+------ ------------------------------------- -------------- ------------------------- ------------- --------- 
+
+C-Layers (5)
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+c_id   name (*_layer)   id   layer_type      macc    rom      tensors                                  shape (array id)   
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+0      gemm_0           0    Dense           1792    7168     I: serving_default_dense_input0_output   f32(1x6) (11)      
+                                                              W: gemm_0_weights                        f32(256x6) (2)     
+                                                              W: gemm_0_bias                           f32(256) (0)       
+                                                              O: gemm_0_output                         f32(1x256) (1)     
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+1      nl_0_nl          0    Nonlinearity    256     0        I: gemm_0_output                         f32(1x256) (1)     
+                                                              O: nl_0_nl_output                        f32(1x256) (9)     
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+2      gemm_1           1    Dense           32896   131584   I: nl_0_nl_output                        f32(1x256) (9)     
+                                                              W: gemm_1_weights                        f32(128x256) (5)   
+                                                              W: gemm_1_bias                           f32(128) (3)       
+                                                              O: gemm_1_output                         f32(1x128) (4)     
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+3      nl_1_nl          1    Nonlinearity    128     0        I: gemm_1_output                         f32(1x128) (4)     
+                                                              O: nl_1_nl_output                        f32(1x128) (10)    
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+4      gemm_2           2    Dense           129     516      I: nl_1_nl_output                        f32(1x128) (10)    
+                                                              W: gemm_2_weights                        f32(1x128) (8)     
+                                                              W: gemm_2_bias                           f32(1) (6)         
+                                                              O: gemm_2_output                         f32(1x1) (7)       
+------ ---------------- ---- --------------- ------- -------- ---------------------------------------- ------------------ 
+
+
+
+Number of operations per c-layer
+------- ------ ------------------------ -------- -------------- 
+c_id    m_id   name (type)                   #op           type 
+------- ------ ------------------------ -------- -------------- 
+0       0      gemm_0 (Dense)              1,792   smul_f32_f32 
+1       0      nl_0_nl (Nonlinearity)        256     op_f32_f32 
+2       1      gemm_1 (Dense)             32,896   smul_f32_f32 
+3       1      nl_1_nl (Nonlinearity)        128     op_f32_f32 
+4       2      gemm_2 (Dense)                129   smul_f32_f32 
+------- ------ ------------------------ -------- -------------- 
+total                                     35,201 
+
+Number of operation types
+---------------- -------- ----------- 
+operation type          #           % 
+---------------- -------- ----------- 
+smul_f32_f32       34,817       98.9% 
+op_f32_f32            384        1.1% 
+
+Complexity report (model)
+------ ------------------------------ ------------------------- ------------------------- -------- 
+m_id   name                           c_macc                    c_rom                     c_id     
+------ ------------------------------ ------------------------- ------------------------- -------- 
+0      serving_default_dense_input0   |                  5.8%   |                  5.1%   [0, 1]   
+1      sequential_dense_1_MatMul      ||||||||||||||||  93.8%   ||||||||||||||||  94.5%   [2, 3]   
+2      sequential_dense_2_MatMul      |                  0.4%   |                  0.4%   [4]      
+------ ------------------------------ ------------------------- ------------------------- -------- 
+macc=35,201 weights=139,268 act=1,536 ram_io=0
+
+Generated files (7)
+------------------------------------------------------------------------------ 
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1_data_params.h   
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1_data_params.c   
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1_data.h          
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1_data.c          
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1_config.h        
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1.h               
+C:\Users\Gmail\.stm32cubemx\remora_nn_6t1_output\remora_nn_6t1.c               
